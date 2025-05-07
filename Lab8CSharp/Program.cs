@@ -9,11 +9,11 @@ namespace lab8
     {
         static void Main(string[] args)
         {
-            // task1();
-            // task2();
-            //task3();
+             //task1();
+             //task2();
+           // task3();
            // task4();
-           // task5();
+          task5();
         }
 
         public static void task1()
@@ -84,75 +84,49 @@ namespace lab8
 
         public static void task3()
         {
-            bool IsPalindrome(string input)
+            string filePath = "D:\\C#\\lab8\\data_task3.txt";
+            string text = File.ReadAllText(filePath);
+            string[] words = Regex.Split(text, @"\W+");
+
+            string wordWithMaxRepeatingChars = "";
+            int maxRepeatingCount = 0;
+
+            foreach (var word in words)
             {
-                var cleaned = new string(input.Where(c => char.IsLetterOrDigit(c)).ToArray()).ToLower();
-                var reversed = new string(cleaned.Reverse().ToArray());
-                return cleaned == reversed;
-            }
+                if (string.IsNullOrEmpty(word)) continue;
+                var charCount = word.GroupBy(c => c)
+                                    .ToDictionary(g => g.Key, g => g.Count());
 
-            string inputPath = "D:\\C#\\lab8\\data_task3.txt";
-            string outputPath = "D:\\C#\\lab8\\result_task3.txt";
+                
+                int maxInWord = charCount.Values.Max();
 
-            // Зчитуємо весь файл
-            string data_text = File.ReadAllText(inputPath);
-
-            // Розділяємо текст за пробілами та комами
-            string[] split_data_text = data_text.Split(new char[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            // Список для збереження знайдених паліндромів
-            List<string> result = new List<string>();
-
-            // Перевіряємо кожне слово на паліндромність
-            foreach (string s in split_data_text)
-            {
-                if (IsPalindrome(s))
+                
+                if (maxInWord > maxRepeatingCount)
                 {
-                    result.Add(s);
+                    maxRepeatingCount = maxInWord;
+                    wordWithMaxRepeatingChars = word;
                 }
             }
 
-            // Записуємо знайдені паліндроми в файл
-            using (StreamWriter writer = new StreamWriter(outputPath, false, Encoding.Default))
-            {
-                foreach (string palindrome in result)
-                {
-                    writer.WriteLine(palindrome);
-                    Console.WriteLine(palindrome);  // Виведення на консоль
-                }
-            }
-
-            Console.WriteLine("Всі знайдені слова паліндроми записано в result_task3.txt");
+            
+            Console.WriteLine($"Слово з найбільшою кількістю однакових символів: {wordWithMaxRepeatingChars}");
         }
 
         public static void task4()
         {
-            string inputPath = "D:\\C#\\lab8\\data_task4.txt";
-            List<String> result = new List<string>();
-
-            Console.Write("Введіть букву: ");
-            char letter = Char.Parse(Console.ReadLine());
-
-            using (FileStream readstream = File.OpenRead(inputPath))
+            string filePath = "D:\\C#\\lab8\\data_task4.bin";
+            byte[] fileBytes = File.ReadAllBytes(filePath);
+            string text = Encoding.UTF8.GetString(fileBytes);
+            string[] words = Regex.Split(text, @"\W+");
+            foreach (var word in words)
             {
-                byte[] array = new byte[readstream.Length];
-                readstream.Read(array);
-                string data_text = Encoding.Default.GetString(array);
+                if (string.IsNullOrEmpty(word)) continue;
 
-                string [] data_text_array = data_text.Split(' ');
-                
-                foreach(string s in data_text_array)
+                // Перевірка умови: перша та остання буква однакові
+                if (char.ToLower(word[0]) == char.ToLower(word[word.Length - 1]))
                 {
-                    if(!string.IsNullOrEmpty(s) && s.StartsWith(letter))
-                    {
-                        result.Add(s);
-                    }
+                    Console.WriteLine(word);
                 }
-            }
-
-            foreach(string s in result)
-            {
-                Console.Write(s+" ");
             }
 
         }
@@ -219,3 +193,6 @@ namespace lab8
         }
 
     }
+}
+
+
